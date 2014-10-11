@@ -36,4 +36,22 @@ public class StyleToolkit {
     }
     return headStyle;
   }
+
+  public CellStyle getDataStyle_0() {
+    if (dataStyle_0 == null) {
+      dataStyle_0 = (XSSFCellStyle) workBook.createCellStyle();
+      dataStyle_0.setFillPattern(CellStyle.SOLID_FOREGROUND);
+      dataStyle_0.setFillForegroundColor((new XSSFColor(new java.awt.Color(209, 233, 233))));
+    }
+    return dataStyle_0;
+  }
+
+  public CellStyle getDataStyle_1() {
+    if (dataStyle_1 == null) {
+      dataStyle_1 = (XSSFCellStyle) workBook.createCellStyle();
+      dataStyle_1.setFillPattern(CellStyle.SOLID_FOREGROUND);
+      dataStyle_1.setFillForegroundColor((new XSSFColor(new java.awt.Color(192, 225, 225))));
+    }
+    return dataStyle_1;
+  }
 }
