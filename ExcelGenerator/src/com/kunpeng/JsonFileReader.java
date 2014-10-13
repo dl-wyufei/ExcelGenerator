@@ -28,7 +28,7 @@ public class JsonFileReader {
     return source;
   }
 
-  private File[] getFiles() {
+  public File[] getFiles() {
     if (folderPath != null) {
       File folderFile = new File(folderPath);
       if (folderFile.isDirectory()) {

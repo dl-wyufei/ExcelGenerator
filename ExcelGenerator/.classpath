@@ -15,6 +15,6 @@
 	<classpathentry kind="lib" path="lib/ezmorph-1.0.6.jar"/>
 	<classpathentry kind="lib" path="lib/commons-lang-2.5.jar"/>
 	<classpathentry kind="lib" path="lib/commons-collections-3.2.1.jar"/>
-	<classpathentry kind="lib" path="lib/gson-2.3.jar"/>
+	<classpathentry kind="lib" path="lib/gson-2.3.jar" sourcepath="C:/Users/harrisonwang/Desktop/gson-2.3-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
