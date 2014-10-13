@@ -15,8 +15,20 @@ public class HeadData {
   }
 
   public void addHeaders(String groupName, Set<String> keys) {
+    ArrayList<String> multiHeader = new ArrayList<String>(1);
+    multiHeader.add("机型");
+    multiHeader.addAll(keys);
     if (!headers.containsKey(groupName)) {
-      headers.put(groupName, new ArrayList<String>(keys));
+      headers.put(groupName, new ArrayList<String>(multiHeader));
+    }
+  }
+
+  public void addHeaders(String groupName, String key) {
+    ArrayList<String> singleHeader = new ArrayList<String>(1);
+    singleHeader.add("机型");
+    singleHeader.add(key);
+    if (!headers.containsKey(groupName)) {
+      headers.put(groupName, new ArrayList<String>(singleHeader));
     }
   }
 

@@ -20,7 +20,7 @@ public class Test {
     HeadData header = dataCreator.getHeadData();
 
     XlsBuilder xlsBuilder = new XlsBuilder(data, header);
-    xlsBuilder.build("D:/haha");
+    xlsBuilder.build("D:/机型数据统计");
 
 
     // List<List<String>> source = new ArrayList<List<String>>();

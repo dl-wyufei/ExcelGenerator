@@ -32,4 +32,12 @@ public class GroupData {
     return content.get(index);
   }
 
+  public int getContentSize() {
+    if (content != null) {
+      return content.size();
+    } else {
+      return -1;
+    }
+  }
+
 }

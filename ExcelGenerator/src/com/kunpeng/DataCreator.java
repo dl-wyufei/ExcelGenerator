@@ -57,16 +57,48 @@ public class DataCreator {
       GroupData groupData = new GroupData(groupName);
 
       JSONObject group = primary.getJSONObject(groupName);// 一个大类内保存数据的Json对象
-      Set<String> detailNames = group.keySet();
 
-      headData.addHeaders(groupName, detailNames);
+      groupData.addContent(model);
 
-      for (String detailName : detailNames) {
-        String value = null;
-        if ((value = group.getString(detailName)) == null) {
-          value = "null";
+      if (groupName.equalsIgnoreCase("STORAGE") || groupName.equalsIgnoreCase("SENSOR")
+          || groupName.equalsIgnoreCase("CAMERA")) {
+        if (groupName.equalsIgnoreCase("STORAGE")) {
+          headData.addHeaders(groupName, "STORAGE");
+        } else if (groupName.equalsIgnoreCase("SENSOR")) {
+          headData.addHeaders(groupName, "SENSOR");
+        } else {
+          headData.addHeaders(groupName, "CAMERA");
         }
-        groupData.addContent(value);
+        StringBuilder sb = new StringBuilder();
+        Set<String> detailNames = group.keySet();
+        for (String detailName : detailNames) {
+          sb.append(detailName);
+          sb.append(": ");
+          String value = group.getString(detailName);
+          if (value == null || value.equals("") || value.equals("null")) {
+            value = "N/A";
+          }
+          sb.append(value);
+          sb.append("     ");
+        }
+        groupData.addContent(sb.toString());
+
+      } else {
+        Set<String> detailNames = group.keySet();
+        headData.addHeaders(groupName, detailNames);
+        for (String detailName : detailNames) {
+          String value = group.getString(detailName);
+          // if (value == null && detailName.equalsIgnoreCase("camera")) {
+          // value = group.getString("Camera");
+          // }
+          // if (value == null && detailName.equalsIgnoreCase("camera")) {
+          // value = group.getString("CAMERA");
+          // }
+          if (value == null || value.equals("") || value.equals("null")) {
+            value = "N/A";
+          }
+          groupData.addContent(value);
+        }
       }
       deviceData.addGroupData(groupData);
     }

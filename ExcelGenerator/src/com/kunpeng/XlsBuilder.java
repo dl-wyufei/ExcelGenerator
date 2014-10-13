@@ -43,55 +43,39 @@ public final class XlsBuilder {
     this.header = header;
   }
 
-  // /** 构建总表所需数据 */
-  // private List<HashMap<String, String>> getTotalTableData() {
-  // // 本方法返回的可用数据
-  // List<HashMap<String, String>> tData = new ArrayList<HashMap<String, String>>();
-  //
-  // // 遍历每个大类的数据
-  // for (HashMap<String, HashMap<String, String>> gSrc : src) {
-  // HashMap<String, String> gData = new HashMap<String, String>();
-  // // 遍历一个大类数据的详细条目
-  // for (String gKey : gSrc.keySet()) {
-  // // 最终的详细数据
-  // HashMap<String, String> detailData = gSrc.get(gKey);
-  // for (String dKey : detailData.keySet()) {
-  // gData.put(gKey + dKey, detailData.get(dKey));
-  // }
-  // }
-  // tData.add(gData);
-  // }
-  //
-  // return tData;
-  // }
-
-
   public void build(String filePath) {
-    // 构建总表
-    // Sheet sh = createSheet("总表");
-    // for (int i = 0; i < source.size(); i++) {
-    // createRow(sh, i, source.get(i));
-    // }
-    // for (int i = 0, lg = getColumnCount(); i < lg; i++) {// 所有列长度适配
-    // sh.setColumnWidth(i, source.get(0).get(i).getBytes().length * 256 + 300);
-    // }
 
-    // 构建分类表
+    // ==============> 构建分类表 <============
+    // 获取大类集合
     ArrayList<String> groups = new ArrayList<String>();
     DeviceData tmp = data.get(0);
-    for (int i = 0, lg = tmp.getGroupDataSize(); i < lg; i++) {
+    for (int i = 0, lg = tmp.getContentSize(); i < lg; i++) {
       groups.add(tmp.get(i).getGroupName());
     }
-
+    // 构建各个分类表
     for (int i = 0, lg = groups.size(); i < lg; i++) {
-      Sheet sh = createSheet(groups.get(i));
-      for (DeviceData devData : data) {
-        GroupData gData = devData.get(i);
-        createRow(sh, i, gData, groups.get(i), header.getHeaders(groups.get(i)).size());
+      String groupName = groups.get(i);
+      Sheet sh = createSheet(groupName);
+
+      List<String> headers = header.getHeaders(groupName);// 表头数据
+      int columnCount = headers.size();// 列数
+
+      ArrayList<Integer> Hlength = createHeader(sh, headers, columnCount);
+      ArrayList<Integer> length = createRows(sh, data, columnCount, i);
+
+      for (int j = 0; j < columnCount; j++) {// 所有列长度适配
+        int len = length.get(j) + 1;
+        int Hlen = Hlength.get(j) + 1;
+        int flen = len;
+        if (Hlen > flen) {
+          flen = Hlen;
+        }
+        if(flen > 230){
+          flen = 230;
+        }
+        sh.setColumnWidth(j, flen * 256 + 500);
       }
     }
-
-
 
     try {
       FileOutputStream out = new FileOutputStream(filePath + ".xlsx");
@@ -109,27 +93,56 @@ public final class XlsBuilder {
     return sh;
   }
 
-
-  /** 创建一行数据 */
-  private void createRow(Sheet sh, int rowIndex, GroupData data, String groupName, int columnCount) {
-    Row row = sh.createRow(rowIndex);
-    // 设置表头行高
-    if (rowIndex == 0) {
-      row.setHeight((short) (35 * 20));
-    }
-
+  /** 创建表头 */
+  private ArrayList<Integer> createHeader(Sheet sh, List<String> headers, int columnCount) {
+    ArrayList<Integer> maxSizeCount = new ArrayList<Integer>(columnCount);
+    Row row = sh.createRow(0);
     for (int i = 0; i < columnCount; i++) {
       Cell cell = row.createCell(i);
-      cell.setCellValue(data.get(i));
-      if (rowIndex == 0) {// 设置表头内容和样式
-        cell.setCellValue(header.getHeaders(groupName).get(i));
-        cell.setCellStyle(styleToolkit.getHeadStyle());
-      } else if (rowIndex % 2 == 0) {
-        cell.setCellStyle(styleToolkit.getDataStyle_0());
-      } else {
-        cell.setCellStyle(styleToolkit.getDataStyle_1());
+      cell.setCellValue(headers.get(i));
+
+      int len = headers.get(i).getBytes().length;
+      if (maxSizeCount.size() <= i) {
+        maxSizeCount.add(len);
+      } else if (maxSizeCount.get(i) < len) {
+        maxSizeCount.set(i, len);
+      }
+
+      cell.setCellStyle(styleToolkit.getHeadStyle());
+    }
+    row.setHeight((short) (35 * 20));
+    return maxSizeCount;
+  }
+
+
+  /** 创建一个分类工作表内的据 */
+  private ArrayList<Integer> createRows(Sheet sh, List<DeviceData> data, int columnCount,
+      int groupIndex) {
+    ArrayList<Integer> maxSizeCount = new ArrayList<Integer>(columnCount);
+    for (int i = 1, lg = (data.size() + 1); i < lg; i++) {
+      DeviceData curDevData = data.get(i - 1);
+      GroupData curGroupData = curDevData.get(groupIndex);
+      Row row = sh.createRow(i);
+      for (int j = 0; j < columnCount; j++) {
+        Cell cell = row.createCell(j);
+        System.out.println(curGroupData.getGroupName());
+        cell.setCellValue(curGroupData.get(j));
+
+        int len = curGroupData.get(j).getBytes().length;
+        if (maxSizeCount.size() <= j) {
+          maxSizeCount.add(len);
+        } else if (maxSizeCount.get(j) < len) {
+          maxSizeCount.set(j, len);
+        }
+
+
+        if (j % 2 == 0) {
+          cell.setCellStyle(styleToolkit.getDataStyle_0());
+        } else {
+          cell.setCellStyle(styleToolkit.getDataStyle_1());
+        }
       }
     }
-
+    return maxSizeCount;
   }
 }

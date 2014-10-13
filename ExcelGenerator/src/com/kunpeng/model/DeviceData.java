@@ -31,7 +31,7 @@ public class DeviceData {
     return content.get(index);
   }
 
-  public int getGroupDataSize() {
+  public int getContentSize() {
     return content.size();
   }
 }
