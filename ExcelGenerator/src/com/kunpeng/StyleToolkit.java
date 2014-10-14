@@ -6,7 +6,7 @@ import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
 
-public class StyleToolkit {
+public final class StyleToolkit {
 
   private SXSSFWorkbook workBook = null;
 

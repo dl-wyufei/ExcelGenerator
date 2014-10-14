@@ -1,15 +1,9 @@
 package com.kunpeng.xlsx;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.xssf.streaming.SXSSFWorkbook;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -28,18 +22,19 @@ public final class XlsxCreator {
   /** 数据存于不同文件 */
   public static final int XLSX_SEP_FILE = 2;
 
-  private Gson gson = new Gson();
-
   private JsonFileReader reader = new JsonFileReader();
-
+  private Gson gson = new Gson();
   private File[] files = null;
+  private WorkBookInfo info = null;
+  private int genKind = XLSX_SEP_SHEET;
+  private String genPath = "D:/DefaultFile.xlsx";
 
-  private WorkBookInfo workBookInfo = null;
-
-  public XlsxCreator(File[] files) {
-    this.files = files;
+  public XlsxCreator(String sourcePath, String genPath, int genKind) {
+    this.genKind = genKind;
+    this.genPath = genPath;
     try {
-      workBookInfo = initWorkBookInfo(files);
+      this.files = reader.getFiles(new File(sourcePath));
+      info = initWorkBookInfo(files);
     } catch (JsonSyntaxException e) {
       e.printStackTrace();
     } catch (IOException e) {
@@ -47,65 +42,17 @@ public final class XlsxCreator {
     }
   }
 
-  public void create(int genKind) {
-    try {
-      switch (genKind) {
-        case XLSX_ALL_IN_ONE:
-          break;
-        case XLSX_SEP_SHEET:
-          createWorkBookWithSeprateSheet();
-          break;
-        case XLSX_SEP_FILE:
-          break;
-      }
-    } catch (IOException e) {
-
-    } catch (JsonSyntaxException e) {
-
-    }
-  }
-
-  /** 创建文件 - 数据存于一个文件不同工作表 */
-  private void createWorkBookWithSeprateSheet() throws IOException, JsonSyntaxException {
-    SXSSFWorkbook workbook = new SXSSFWorkbook(175);
-    List<String> sheetNames = workBookInfo.getCategoriesNames();
-    for (String sheetName : sheetNames) {
-      Sheet sh = workbook.createSheet(sheetName);
-      // 生成表头
-      Row header = sh.createRow(0);
-      int index = sheetNames.indexOf(sheetName);
-      List<String> headerContent = workBookInfo.getCategoryContentHeaders(index);
-      int columnCount = headerContent.size();
-      for (int i = 0; i < columnCount; i++) {
-        Cell cell = header.createCell(i);
-        cell.setCellValue(headerContent.get(i));
-      }
-      // 生成表内数据(每一个工作表都重新io所有文件,以少量时间换取海量数据支持)
-      for (int i = 0; i < files.length; i++) {
-        File file = files[i];
-        String json = reader.read(file);
-        int firstL = json.indexOf("{");
-        String label = json.substring(0, firstL);
-        String rJson = json.substring(firstL);
-        MData data = gson.fromJson(rJson, MData.class);
-        Row row = sh.createRow(i + 1);
-        Cell labelCell = row.createCell(0);
-        labelCell.setCellValue(label);
-        MCategory category = data.getCategories().get(index);
-        for (int j = 1; j < headerContent.size(); j++) {
-          Cell cell = row.createCell(j);
-          cell.setCellValue(category.getContent(headerContent.get(j)));
-          System.out.print("N - " + headerContent.get(j));
-          System.out.println("; V - " + category.getContent(headerContent.get(j)));
-        }
-      }
-    }
-    try {
-      FileOutputStream out = new FileOutputStream("D:/hahaha.xlsx");
-      workbook.write(out);
-      workbook.dispose();
-    } catch (IOException e) {
-      e.printStackTrace();
+  public void create() {
+    switch (genKind) {
+      case XLSX_ALL_IN_ONE:
+        (new OneXlsxCreator(reader, gson, info, files, genPath)).create();
+        break;
+      case XLSX_SEP_SHEET:
+        (new SheetsXlsxCreator(reader, gson, info, files, genPath)).create();
+        break;
+      case XLSX_SEP_FILE:
+        (new FilesXlsxCreator(reader, gson, info, files, genPath)).create();
+        break;
     }
   }
 

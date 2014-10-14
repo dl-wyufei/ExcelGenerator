@@ -9,12 +9,6 @@
 	<classpathentry kind="lib" path="lib/poi-scratchpad-3.10.1-20140818.jar"/>
 	<classpathentry kind="lib" path="lib/xbean.jar"/>
 	<classpathentry kind="lib" path="lib/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="lib/json-lib-2.4-jdk15.jar"/>
-	<classpathentry kind="lib" path="lib/commons-beanutils-1.9.2.jar"/>
-	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="lib/ezmorph-1.0.6.jar"/>
-	<classpathentry kind="lib" path="lib/commons-lang-2.5.jar"/>
-	<classpathentry kind="lib" path="lib/commons-collections-3.2.1.jar"/>
 	<classpathentry kind="lib" path="lib/gson-2.3.jar" sourcepath="C:/Users/harrisonwang/Desktop/gson-2.3-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
