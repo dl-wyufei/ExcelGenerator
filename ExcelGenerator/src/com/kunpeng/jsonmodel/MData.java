@@ -1,4 +1,4 @@
-package com.kunpeng.base;
+package com.kunpeng.jsonmodel;
 
 import java.util.Collections;
 import java.util.List;

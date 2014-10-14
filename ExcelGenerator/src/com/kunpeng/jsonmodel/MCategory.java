@@ -1,9 +1,10 @@
-package com.kunpeng.base;
+package com.kunpeng.jsonmodel;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
+import java.util.Set;
 
 /**
  * 大类数据结构
@@ -16,9 +17,13 @@ public class MCategory {
   /** 大类数据名称 */
   private String categoryName = null;
   /** 大类数据具体名称 */
-  private LinkedHashMap<String, String> content = null;
+  private LinkedHashMap<String, String> content = new LinkedHashMap<String, String>();
 
   public MCategory() {}
+
+  public void setSingleContent(String key, String value) {
+    content.put(key, value);
+  }
 
   /**
    * 设置大类数据名称
@@ -43,6 +48,7 @@ public class MCategory {
 
   /**
    * 根据键值获取对应的具体数据
+   * 
    * @return 如果键值对应无数据返回"N/A"
    */
   public String getContent(String key) {
@@ -68,6 +74,17 @@ public class MCategory {
       return names;
     }
     return null;
+  }
+
+  public boolean isContainNull() {
+    Set<String> keys = content.keySet();
+    for (String key : keys) {
+      String res = content.get(key);
+      if (res.equals("")) {
+        return true;
+      }
+    }
+    return false;
   }
 
 }

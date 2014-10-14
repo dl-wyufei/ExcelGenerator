@@ -1,4 +1,4 @@
-package com.kunpeng.base;
+package com.kunpeng.jsonmodel;
 
 import java.util.HashMap;
 import java.util.List;
