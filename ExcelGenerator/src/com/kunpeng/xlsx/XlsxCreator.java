@@ -4,8 +4,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
@@ -94,10 +92,11 @@ public final class XlsxCreator {
         Cell labelCell = row.createCell(0);
         labelCell.setCellValue(label);
         MCategory category = data.getCategories().get(index);
-        List<String> names = category.getNames();
-        for (int j = 0; j < names.size(); j++) {
-          Cell cell = row.createCell(j + 1);
-          cell.setCellValue(category.getContent(names.get(j)));
+        for (int j = 1; j < headerContent.size(); j++) {
+          Cell cell = row.createCell(j);
+          cell.setCellValue(category.getContent(headerContent.get(j)));
+          System.out.print("N - " + headerContent.get(j));
+          System.out.println("; V - " + category.getContent(headerContent.get(j)));
         }
       }
     }
@@ -134,9 +133,9 @@ public final class XlsxCreator {
           categoryContentNames = info.getCategoryContentHeaders(i);
         } catch (IndexOutOfBoundsException e) {
           categoryContentNames = new ArrayList<String>();
+          categoryContentNames.add("Label");
           info.addCategoryContentHeaders(categoryContentNames);
         }
-        categoryContentNames.add("Label");
         Utils.addDistinctElement(categoryContentNames, category.getNames());
       }
     }
