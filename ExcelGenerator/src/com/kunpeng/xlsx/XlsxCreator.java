@@ -83,7 +83,7 @@ public final class XlsxCreator {
           categoryContentNames.add("Label");
           info.addCategoryContentHeaders(categoryContentNames);
         }
-        Utils.addDistinctElement(categoryContentNames, category.getNames());
+        Utils.addDistinctElement(categoryContentNames, category.getKeys());
       }
     }
     return info;
